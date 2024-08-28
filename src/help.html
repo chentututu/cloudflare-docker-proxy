@@ -12,10 +12,11 @@
             background-color: #f4f4f4;
         }
         .header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #3495b2, #3fa168);
             color: #fff;
+            height: 30px;
             padding: 20px 0;
-            text-align: center;
+            align: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             position: relative;
         }
@@ -31,12 +32,17 @@
             height: 24px;
             vertical-align: middle;
         }
-        .container {
+        .container-out {
+            #position: absolute;
+
+            background-color: #f2f2f3;
+        }
+        .container-in {
             max-width: 800px;
             margin: 40px auto;
             padding: 20px;
             background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(21, 19, 19, 0.91);
             border-radius: 10px;
         }
         .content {
@@ -59,7 +65,7 @@
             font-family: 'Source Code Pro', monospace;
         }
         a {
-            color: #4CAF50;
+            color: #ece9f1;
             text-decoration: none;
         }
         a:hover {
@@ -71,23 +77,28 @@
                 padding: 15px;
             }
             .header {
-                padding: 15px 0;
+                #padding: 15px 0;
             }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Source+Code+Pro:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+<div id="raw_include_HEADER_md"></div>
 <div class="header">
-    <h1>Tecloman镜像使用说明</h1>
+    <div style="position: absolute; top: -5px; left: 0%;">
+        <img src="./js/tecloman.png" style="width: 50%; height: auto;">
+    </div>
+    <h1 style="position: absolute;top: -5px;left: 35%">Tecloman镜像使用说明</h1>
     <a href="https://github.com/chentututu/cloudflare-docker-proxy" target="_blank" class="github-link">
         <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" class="github-icon">
     </a>
 </div>
-<div class="container">
-    <div class="content">
-        <p>为了加速 Docker 镜像拉取，你可以使用以下命令设置 registry mirror:</p>
-        <pre><code id="registry-config">sudo tee /etc/docker/daemon.json &lt;&lt;EOF
+<div class="container-out">
+    <div class="container-in">
+        <div class="content">
+            <p>为了加速 Docker 镜像拉取，你可以使用以下命令设置 registry mirror:</p>
+            <pre><code id="registry-config">sudo tee /etc/docker/daemon.json &lt;&lt;EOF
 {
     "registry-mirrors": ["https://{{host}}"]
 }
@@ -96,8 +107,8 @@ EOF
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 </code></pre>
-        <p>使用该代理从不同的镜像仓库拉取镜像，请参考以下命令：</p>
-        <pre><code id="commands">
+            <p>使用该代理从不同的镜像仓库拉取镜像，请参考以下命令：</p>
+            <pre><code id="commands">
 # docker pull nginx:latest
 docker pull docker.{{host}}/library/nginx:latest  # 拉取 Docker 官方镜像
 
@@ -119,13 +130,15 @@ docker pull ghcr.{{host}}/github/super-linter:latest  # 拉取 GitHub 容器镜�
 # docker pull docker.cloudsmith.io/public/repo/image:latest
 docker pull cloudsmith.{{host}}/public/repo/image:latest  # 拉取 Cloudsmith 镜像
 </code></pre>
-        <p>为了避免 Worker 用量耗尽，你可以手动 pull 镜像然后 re-tag 之后 push 至本地镜像仓库。</p>
+            <p>为了避免 Worker 用量耗尽，你可以手动 pull 镜像然后 re-tag 之后 push 至本地镜像仓库。</p>
+        </div>
     </div>
 </div>
 <div class="footer">
-    <p><a href="https://www.tecloman.com" target="_blank">Tecloman</p>
+    <p><a href="https://www.tecloman.com" target="_blank">Tecloman</a>
+        <a href="https://blog.csdn.net/weixin_51216079?type=blog" target="_blank">访问博客</a>
+    </p>
     <p><a href="https://dash.cloudflare.com" target="_blank">基于 Cloudflare Workers 和 cloudflare-docker-proxy 搭建镜像加速服务</a></p>
-    <p><a href="https://blog.csdn.net/weixin_51216079?type=blog" target="_blank">访问博客</a></p>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -133,7 +146,6 @@ docker pull cloudsmith.{{host}}/public/repo/image:latest  # 拉取 Cloudsmith �
         const mainDomain = host.split('.').slice(-2).join('.');
         const registryConfigElement = document.getElementById('registry-config');
         const commandsElement = document.getElementById('commands');
-
         registryConfigElement.innerHTML = registryConfigElement.innerHTML.replace(/{{host}}/g, host);
         commandsElement.innerHTML = commandsElement.innerHTML.replace(/{{host}}/g, mainDomain);
     });
