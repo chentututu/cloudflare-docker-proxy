@@ -1,5 +1,4 @@
-# docs
-详细教程 --> [基于 Cloudflare Workers 和 cloudflare-docker-proxy 搭建镜像加速服务](https://www.lixueduan.com/posts/docker/12-docker-mirror/)
+
 
 ---
 
